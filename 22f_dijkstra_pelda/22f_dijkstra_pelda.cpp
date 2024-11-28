@@ -59,7 +59,15 @@ void beolvasas_ellenorzese(vector<vector<int>> m) {
 }
 
 vector<int> szomszedai(vector<vector<int>> m, int ennek) {
-	// ezt írd meg!
+	vector<int> result;
+	for (size_t i = 0; i < m.size(); i++)
+	{
+		if (-1 < m[ennek][i] && i != ennek) // itt feltettük, hogy nincsenek hurkok, és -1 jelöli azt, hogy nem szomszéd!
+		{
+			result.push_back(i);
+		}
+	}
+	return result;
 }
 
 vector<vector<int>> dijkstra(vector<vector<int>> m, int start) {
