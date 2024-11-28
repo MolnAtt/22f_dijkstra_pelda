@@ -18,9 +18,11 @@ public:
 		this->tavolsag = tavolsag;
 	}
 
-	bool operator<(const Csucs& that) {
-		return this->tavolsag < that.tavolsag;
-	}
+
+
+	//bool operator>(const Csucs& that) {
+	//	return this->tavolsag > that.tavolsag;
+	//}
 
 	~Csucs()
 	{
@@ -29,6 +31,15 @@ public:
 private:
 
 };
+
+class Osszehasonlit
+{
+public:
+	bool operator()(const Csucs& ez, const Csucs& az) {
+		return ez.tavolsag > az.tavolsag;
+	}
+};
+
 
 
 vector<vector<int>> beolvas() {
@@ -75,19 +86,26 @@ vector<vector<int>> dijkstra(vector<vector<int>> m, int start) {
 	tav[start] = 0;
 	vector<int> honnan(m.size(), -1);
 
-	priority_queue<Csucs> tennivalok;
+	priority_queue<Csucs, vector<Csucs>, Osszehasonlit> tennivalok;
 	tennivalok.push(Csucs(start, tav[start]));
 
 	while (!tennivalok.empty())
 	{
 		Csucs tennivalo = tennivalok.top();
 		tennivalok.pop();
-
-		for (int& szomszed : szomszedai(m, tennivalo))
+		if (tennivalo.tavolsag < tav[tennivalo.sorszam]) // így bukik le a régi szemét
 		{
-			//...
+			for (int& szomszed : szomszedai(m, tennivalo.sorszam))
+			{
+				int uj_lehetseges_tavolsag = tav[tennivalo.sorszam] + m[tennivalo.sorszam][szomszed];
+				if (uj_lehetseges_tavolsag < tav[szomszed])
+				{
+					tav[szomszed] = uj_lehetseges_tavolsag;
+					honnan[szomszed] = tennivalo.sorszam;
+					tennivalok.push(Csucs(szomszed, tav[szomszed]));
+				}
+			}
 		}
-
 	}
 
 
@@ -96,13 +114,32 @@ vector<vector<int>> dijkstra(vector<vector<int>> m, int start) {
 
 int main()
 {
-	//vector<vector<int>> m = beolvas();
-	//beolvasas_ellenorzese(m);
-	Csucs cs1 = Csucs(0, 5);
-	Csucs cs2 = Csucs(2, 3);
+	vector<vector<int>> m = beolvas();
+	beolvasas_ellenorzese(m);
 
-	cout << (cs2 < cs1);
 
+	// teszt arra, hogy megy a priority queue
+	//priority_queue<Csucs, vector<Csucs>, Osszehasonlit> csucsok;
+	//csucsok.push(Csucs(0, 5));
+	//csucsok.push(Csucs(2, 7));
+	//cout << csucsok.top().sorszam;
+
+
+	vector<vector<int>> eredmenyek = dijkstra(m, 0);
+	vector<int> tav = eredmenyek[0];
+	vector<int> honnan = eredmenyek[1];
+
+	cout << "tav: \n";
+	for (auto& i : tav)
+	{
+		cout << i << endl;
+	}
+	cout << "-----------\n";
+	cout << "honnan: \n";
+	for (auto& i : honnan)
+	{
+		cout << i << endl;
+	}
 }
 
 
