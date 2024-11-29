@@ -93,7 +93,7 @@ vector<vector<int>> dijkstra(vector<vector<int>> m, int start) {
 	{
 		Csucs tennivalo = tennivalok.top();
 		tennivalok.pop();
-		if (tennivalo.tavolsag < tav[tennivalo.sorszam]) // így bukik le a régi szemét
+		if (tennivalo.tavolsag == tav[tennivalo.sorszam]) // így bukik le a régi szemét
 		{
 			for (int& szomszed : szomszedai(m, tennivalo.sorszam))
 			{
